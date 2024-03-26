@@ -9,6 +9,10 @@ inputs:
     description: "Build projects using different modes [default: 'release']"
     required: true
     default: "release"
+  features:
+    description: "Build projects using different features [default: 'default']"
+    required: true
+    default: "default"
   toolchain:
     description: "Build projects using a different rust toolchain [default: 'stable']"
     required: true
@@ -26,7 +30,7 @@ runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v3
-    - uses: actions-rs/toolchain@v1
+    - uses: actions-rs/toolchain@v1.0.6
       with:
         toolchain: ${{ inputs.toolchain }}
         profile: minimal
@@ -39,7 +43,7 @@ runs:
 
     - name: Build Project 🎁
       shell: bash
-      run: cd ${{ inputs.rootPath }} && dx build --${{ inputs.buildMode }} && cp ./${{ inputs.outDirectory }}/index.html ./${{ inputs.outDirectory }}/404.html
+      run: cd ${{ inputs.rootPath }} && dx build --${{ inputs.buildMode }} --platform web --features ${{ inputs.features }} && cp ./${{ inputs.outDirectory }}/index.html ./${{ inputs.outDirectory }}/404.html
 
     - name: Deploy Project 🚀
       uses: JamesIves/github-pages-deploy-action@v4.4.1
